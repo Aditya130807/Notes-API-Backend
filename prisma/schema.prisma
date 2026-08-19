@@ -1,0 +1,23 @@
+// Prisma schema for the Notes API.
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Note {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Composite index to support deterministic, duplicate-safe cursor
+  // pagination ordered by createdAt DESC, id DESC (see notes.service.js).
+  @@index([createdAt, id])
+}
